@@ -182,10 +182,23 @@ function setupGracefulShutdown() {
 
 // Gestion des erreurs non captur�es
 process.on('unhandledRejection', (reason, promise) => {
+  // Ignorer les erreurs connues de whatsapp-web.js
+  if (reason instanceof Error &&
+      (reason.message.includes('getIsMyContact') ||
+       reason.message.includes('window.Store.ContactMethods'))) {
+    console.warn('=� Erreur connue de whatsapp-web.js ignor�e:', reason.message.substring(0, 100));
+    return;
+  }
   console.error('L Promesse non g�r�e:', reason);
 });
 
 process.on('uncaughtException', (error) => {
+  // Ignorer les erreurs connues de whatsapp-web.js
+  if (error.message.includes('getIsMyContact') ||
+      error.message.includes('window.Store.ContactMethods')) {
+    console.warn('=� Erreur connue de whatsapp-web.js ignor�e:', error.message.substring(0, 100));
+    return;
+  }
   console.error('L Exception non captur�e:', error);
   process.exit(1);
 });

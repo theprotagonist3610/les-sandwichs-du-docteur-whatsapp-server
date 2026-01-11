@@ -113,48 +113,78 @@ export async function sendBulkMessages(numbers, message) {
  * @param {Object} message - Objet message de whatsapp-web.js
  */
 export async function handleIncomingMessage(message) {
-  const contact = await message.getContact();
-  const chat = await message.getChat();
-
-  console.log(`📥 [MessageService] Message reçu de ${contact.pushname || contact.number}:`, message.body);
-
-  // Ignore les messages de groupes si nécessaire
-  if (chat.isGroup) {
-    console.log('👥 [MessageService] Message de groupe ignoré');
-    return;
-  }
-
-  // Traitement des commandes
-  const command = message.body.toLowerCase().trim();
-
   try {
-    switch (command) {
-      case 'ping':
-        await message.reply(pongMessage());
-        console.log('🏓 [MessageService] Réponse "pong" envoyée');
-        break;
+    // Récupération des informations avec gestion d'erreur
+    let contact = null;
+    let chat = null;
 
-      case 'aide':
-      case 'help':
-        await message.reply(helpMessage());
-        console.log('ℹ️ [MessageService] Message d\'aide envoyé');
-        break;
+    try {
+      contact = await message.getContact();
+    } catch (contactError) {
+      console.warn('⚠️ [MessageService] Impossible de récupérer le contact:', contactError.message);
+      // Utiliser les infos disponibles depuis le message directement
+      contact = {
+        pushname: message.from,
+        number: message.from.replace('@c.us', ''),
+        name: 'Inconnu'
+      };
+    }
 
-      case 'info':
-        await message.reply(infoMessage());
-        console.log('📋 [MessageService] Informations envoyées');
-        break;
+    try {
+      chat = await message.getChat();
+    } catch (chatError) {
+      console.warn('⚠️ [MessageService] Impossible de récupérer le chat:', chatError.message);
+      // Créer un objet chat minimal
+      chat = {
+        isGroup: message.from.includes('@g.us'),
+        id: { _serialized: message.from }
+      };
+    }
 
-      default:
-        // Pour les autres messages, on peut choisir de ne rien faire
-        // ou d'envoyer un message de commande inconnue
-        if (command.startsWith('/') || command.startsWith('!')) {
-          await message.reply(unknownCommandMessage());
-        }
-        break;
+    const contactName = contact.pushname || contact.name || contact.number || 'Inconnu';
+    console.log(`📥 [MessageService] Message reçu de ${contactName}:`, message.body);
+
+    // Ignore les messages de groupes si nécessaire
+    if (chat.isGroup) {
+      console.log('👥 [MessageService] Message de groupe ignoré');
+      return;
+    }
+
+    // Traitement des commandes
+    const command = message.body.toLowerCase().trim();
+
+    try {
+      switch (command) {
+        case 'ping':
+          await message.reply(pongMessage());
+          console.log('🏓 [MessageService] Réponse "pong" envoyée');
+          break;
+
+        case 'aide':
+        case 'help':
+          await message.reply(helpMessage());
+          console.log('ℹ️ [MessageService] Message d\'aide envoyé');
+          break;
+
+        case 'info':
+          await message.reply(infoMessage());
+          console.log('📋 [MessageService] Informations envoyées');
+          break;
+
+        default:
+          // Pour les autres messages, on peut choisir de ne rien faire
+          // ou d'envoyer un message de commande inconnue
+          if (command.startsWith('/') || command.startsWith('!')) {
+            await message.reply(unknownCommandMessage());
+          }
+          break;
+      }
+    } catch (replyError) {
+      console.error('❌ [MessageService] Erreur envoi réponse:', replyError.message);
     }
   } catch (error) {
     console.error('❌ [MessageService] Erreur traitement message:', error.message);
+    // Ne pas laisser l'erreur remonter pour éviter les "Unhandled Promise"
   }
 }
 
