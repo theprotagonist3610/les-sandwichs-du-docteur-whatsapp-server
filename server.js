@@ -93,7 +93,8 @@ app.get('/api/contacts', authMiddleware, getContactsHandler);
 app.get('/api/contacts/:contactId', authMiddleware, getContactHandler);
 app.get('/api/chats', authMiddleware, getChatsHandler);
 app.post('/api/media/send', authMiddleware, uploadMiddleware, sendMediaHandler);
-app.get('/api/qr', authMiddleware, getQrCodeHandler);
+// QR code endpoint sans authentification (nécessaire pour la première connexion)
+app.get('/api/qr', getQrCodeHandler);
 
 // Gestionnaire 404
 app.use(notFoundHandler);
