@@ -8,7 +8,8 @@ import { asyncHandler, createHttpError } from './errorHandler.js';
 import { hasPermission } from '../services/apiKeyService.js';
 import QRCode from 'qrcode';
 import multer from 'multer';
-import { MessageMedia } from 'whatsapp-web.js';
+import pkg from 'whatsapp-web.js';
+const { MessageMedia } = pkg;
 import { readFileSync, unlinkSync } from 'fs';
 
 // Configuration multer pour l'upload de fichiers
