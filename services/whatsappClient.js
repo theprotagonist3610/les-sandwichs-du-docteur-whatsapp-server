@@ -20,23 +20,53 @@ export function createWhatsAppClient() {
 
   console.log('🔧 [WhatsApp] Initialisation du client...');
 
+  // Configuration Puppeteer avec détection automatique de Chromium
+  const puppeteerConfig = {
+    headless: true,
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-accelerated-2d-canvas',
+      '--no-first-run',
+      '--no-zygote',
+      '--single-process',
+      '--disable-gpu'
+    ]
+  };
+
+  // Détection automatique du chemin Chromium pour différents environnements
+  if (process.env.PUPPETEER_EXECUTABLE_PATH) {
+    // Railway/Render: utiliser le chemin fourni
+    puppeteerConfig.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
+    console.log(`📍 [WhatsApp] Utilisation de Chromium: ${process.env.PUPPETEER_EXECUTABLE_PATH}`);
+  } else if (process.env.NODE_ENV === 'production') {
+    // Production sans chemin explicite: essayer les chemins communs
+    const possiblePaths = [
+      '/usr/bin/chromium',
+      '/usr/bin/chromium-browser',
+      '/usr/bin/google-chrome',
+      '/nix/store/chromium'
+    ];
+
+    for (const path of possiblePaths) {
+      try {
+        if (require('fs').existsSync(path)) {
+          puppeteerConfig.executablePath = path;
+          console.log(`📍 [WhatsApp] Chromium trouvé: ${path}`);
+          break;
+        }
+      } catch (e) {
+        // Continuer la recherche
+      }
+    }
+  }
+
   client = new Client({
     authStrategy: new LocalAuth({
       dataPath: './session'
     }),
-    puppeteer: {
-      headless: true,
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-accelerated-2d-canvas',
-        '--no-first-run',
-        '--no-zygote',
-        '--single-process',
-        '--disable-gpu'
-      ]
-    }
+    puppeteer: puppeteerConfig
   });
 
   setupEventHandlers(client);

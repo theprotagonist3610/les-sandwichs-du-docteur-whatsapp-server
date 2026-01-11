@@ -1,0 +1,15 @@
+[phases.setup]
+nixPkgs = ["nodejs_18", "chromium", "nss", "freetype", "harfbuzz", "ca-certificates", "fontconfig"]
+
+[phases.install]
+cmds = [
+  "npm ci",
+  "npx playwright install chromium --with-deps"
+]
+
+[start]
+cmd = "npm start"
+
+[variables]
+PUPPETEER_SKIP_CHROMIUM_DOWNLOAD = "false"
+PUPPETEER_EXECUTABLE_PATH = "/nix/store/*-chromium-*/bin/chromium"
