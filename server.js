@@ -182,21 +182,27 @@ function setupGracefulShutdown() {
 
 // Gestion des erreurs non captur�es
 process.on('unhandledRejection', (reason, promise) => {
-  // Ignorer les erreurs connues de whatsapp-web.js
+  // Ignorer les erreurs connues de whatsapp-web.js et Puppeteer
   if (reason instanceof Error &&
       (reason.message.includes('getIsMyContact') ||
-       reason.message.includes('window.Store.ContactMethods'))) {
-    console.warn('=� Erreur connue de whatsapp-web.js ignor�e:', reason.message.substring(0, 100));
+       reason.message.includes('window.Store.ContactMethods') ||
+       reason.message.includes('Session closed') ||
+       reason.message.includes('Protocol error') ||
+       reason.message.includes('page has been closed'))) {
+    console.warn('=� Erreur connue ignor�e:', reason.message.substring(0, 100));
     return;
   }
   console.error('L Promesse non g�r�e:', reason);
 });
 
 process.on('uncaughtException', (error) => {
-  // Ignorer les erreurs connues de whatsapp-web.js
+  // Ignorer les erreurs connues de whatsapp-web.js et Puppeteer
   if (error.message.includes('getIsMyContact') ||
-      error.message.includes('window.Store.ContactMethods')) {
-    console.warn('=� Erreur connue de whatsapp-web.js ignor�e:', error.message.substring(0, 100));
+      error.message.includes('window.Store.ContactMethods') ||
+      error.message.includes('Session closed') ||
+      error.message.includes('Protocol error') ||
+      error.message.includes('page has been closed')) {
+    console.warn('=� Erreur connue ignor�e:', error.message.substring(0, 100));
     return;
   }
   console.error('L Exception non captur�e:', error);

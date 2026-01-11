@@ -117,6 +117,18 @@ function setupEventHandlers(client) {
   client.on('disconnected', (reason) => {
     console.warn('⚠️ [WhatsApp] Client déconnecté:', reason);
     isReady = false;
+    latestQrCode = null;
+
+    // Tentative de reconnexion automatique après 5 secondes
+    console.log('🔄 [WhatsApp] Tentative de reconnexion dans 5 secondes...');
+    setTimeout(async () => {
+      try {
+        console.log('🔄 [WhatsApp] Reconnexion en cours...');
+        await client.initialize();
+      } catch (error) {
+        console.error('❌ [WhatsApp] Échec de la reconnexion:', error.message);
+      }
+    }, 5000);
   });
 
   // Événement: Chargement de l'écran
@@ -126,7 +138,16 @@ function setupEventHandlers(client) {
 
   // Événement: Erreur
   client.on('error', (error) => {
-    console.error('❌ [WhatsApp] Erreur:', error);
+    // Filtrer les erreurs connues
+    if (error.message &&
+        (error.message.includes('Session closed') ||
+         error.message.includes('Protocol error') ||
+         error.message.includes('page has been closed'))) {
+      console.error('❌ [WhatsApp] Session Puppeteer fermée:', error.message.substring(0, 100));
+      isReady = false;
+    } else {
+      console.error('❌ [WhatsApp] Erreur:', error);
+    }
   });
 }
 

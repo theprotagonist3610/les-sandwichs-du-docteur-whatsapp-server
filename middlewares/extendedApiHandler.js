@@ -69,8 +69,13 @@ export const getMessagesHandler = asyncHandler(async (req, res) => {
     // Récupère le chat
     const chat = await client.getChatById(formattedChatId);
 
-    // Récupère les messages
-    const messages = await chat.fetchMessages({ limit: limit + offset });
+    // Récupère les messages avec timeout
+    const messages = await Promise.race([
+      chat.fetchMessages({ limit: limit + offset }),
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Timeout: Session Puppeteer fermée')), 10000)
+      )
+    ]);
 
     // Applique l'offset et limite
     const paginatedMessages = messages.slice(offset, offset + limit);
@@ -101,6 +106,13 @@ export const getMessagesHandler = asyncHandler(async (req, res) => {
       }
     });
   } catch (error) {
+    // Gestion spécifique des erreurs de session
+    if (error.message.includes('Session closed') ||
+        error.message.includes('Protocol error') ||
+        error.message.includes('page has been closed')) {
+      console.error('❌ Session Puppeteer fermée, le client doit être reconnecté');
+      throw createHttpError(503, 'Session WhatsApp fermée. Veuillez reconnecter le client.');
+    }
     throw createHttpError(500, `Erreur lors de la récupération des messages: ${error.message}`);
   }
 });

@@ -39,7 +39,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"number\": \"229XXXXXXXX\",\n  \"message\": \"Hello from Postman!\"\n}"
+              "raw": "{\n  \"number\": \"22966354957\",\n  \"message\": \"Hello from Postman!\"\n}"
             },
             "url": {
               "raw": "{{base_url}}/send",
@@ -66,7 +66,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"numbers\": [\"229XXXXXXXX\", \"229YYYYYYYY\", \"229ZZZZZZZZ\"],\n  \"message\": \"Bulk message test from Postman\"\n}"
+              "raw": "{\n  \"numbers\": [\"22966354957\", \"229YYYYYYYY\", \"229ZZZZZZZZ\"],\n  \"message\": \"Bulk message test from Postman\"\n}"
             },
             "url": {
               "raw": "{{base_url}}/send/bulk",
@@ -247,7 +247,7 @@
                 },
                 {
                   "key": "number",
-                  "value": "229XXXXXXXX",
+                  "value": "22966354957",
                   "type": "text",
                   "description": "Numéro du destinataire"
                 },
@@ -327,7 +327,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"event\": \"send_message\",\n  \"data\": {\n    \"number\": \"229XXXXXXXX\",\n    \"message\": \"Message from webhook\"\n  }\n}"
+              "raw": "{\n  \"event\": \"send_message\",\n  \"data\": {\n    \"number\": \"22966354957\",\n    \"message\": \"Message from webhook\"\n  }\n}"
             },
             "url": {
               "raw": "{{base_url}}/webhook",
@@ -344,27 +344,27 @@
   "variable": [
     {
       "key": "base_url",
-      "value": "https://les-sandwichs-du-docteur-whatsapp-server.onrender.com",
+      "value": "https://whatsapp-server-production-17b4.up.railway.app",
       "type": "string"
     },
     {
       "key": "api_key",
-      "value": "sk_9fa142dd2e6ef26de155bb3f703117d9e8bcd145acd6e9fb3855a94c32eb6114",
+      "value": "sk_43f0dbe75442ad2432279cc7c406796f82541aac537ab7ab2ac3de7dfb3bc057",
       "type": "string"
     },
     {
       "key": "chat_id",
-      "value": "229XXXXXXXX",
+      "value": "22966354957",
       "type": "string"
     },
     {
       "key": "contact_id",
-      "value": "229XXXXXXXX",
+      "value": "22966354957",
       "type": "string"
     },
     {
       "key": "message_id",
-      "value": "true_229XXXXXXXX@c.us_3EB0XXXXX",
+      "value": "true_22966354957@c.us_3EB0XXXXX",
       "type": "string"
     }
   ]

@@ -58,7 +58,7 @@
       ],
       "body": {
         "type": "json",
-        "raw": "{\n  \"number\": \"229XXXXXXXX\",\n  \"message\": \"Hello from Thunder Client!\"\n}"
+        "raw": "{\n  \"number\": \"22966354957\",\n  \"message\": \"Hello from Thunder Client!\"\n}"
       },
       "folder": "Core Endpoints",
       "tests": []
@@ -79,7 +79,7 @@
       ],
       "body": {
         "type": "json",
-        "raw": "{\n  \"numbers\": [\"229XXXXXXXX\", \"229YYYYYYYY\"],\n  \"message\": \"Bulk message test\"\n}"
+        "raw": "{\n  \"numbers\": [\"22966354957\", \"229YYYYYYYY\"],\n  \"message\": \"Bulk message test\"\n}"
       },
       "folder": "Core Endpoints",
       "tests": []
@@ -195,7 +195,7 @@
           },
           {
             "name": "number",
-            "value": "229XXXXXXXX",
+            "value": "22966354957",
             "type": "text"
           },
           {
@@ -252,7 +252,7 @@
       ],
       "body": {
         "type": "json",
-        "raw": "{\n  \"event\": \"send_message\",\n  \"data\": {\n    \"number\": \"229XXXXXXXX\",\n    \"message\": \"Message from webhook\"\n  }\n}"
+        "raw": "{\n  \"event\": \"send_message\",\n  \"data\": {\n    \"number\": \"22966354957\",\n    \"message\": \"Message from webhook\"\n  }\n}"
       },
       "folder": "Advanced",
       "tests": []
@@ -262,23 +262,23 @@
     "envVars": [
       {
         "name": "base_url",
-        "value": "http://localhost:3000"
+        "value": "https://whatsapp-server-production-17b4.up.railway.app"
       },
       {
         "name": "api_key",
-        "value": "your_api_key_here"
+        "value": "sk_43f0dbe75442ad2432279cc7c406796f82541aac537ab7ab2ac3de7dfb3bc057"
       },
       {
         "name": "chat_id",
-        "value": "229XXXXXXXX"
+        "value": "22966354957"
       },
       {
         "name": "contact_id",
-        "value": "229XXXXXXXX"
+        "value": "22966354957"
       },
       {
         "name": "message_id",
-        "value": "true_229XXXXXXXX@c.us_3EB0XXXXX"
+        "value": "true_22966354957@c.us_3EB0XXXXX"
       }
     ]
   }
