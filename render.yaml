@@ -2,14 +2,24 @@ services:
   - type: web
     name: whatsapp-server
     env: node
-    buildCommand: npm install
+    region: frankfurt
+    plan: free
+    buildCommand: npm install && npx playwright install chromium --with-deps
     startCommand: npm start
     envVars:
       - key: NODE_ENV
         value: production
+      - key: PORT
+        value: 10000
       - key: API_KEY
         sync: false
+      - key: PUPPETEER_SKIP_CHROMIUM_DOWNLOAD
+        value: true
+      - key: PUPPETEER_EXECUTABLE_PATH
+        value: /root/.cache/ms-playwright/chromium-*/chrome-linux/chrome
     disk:
-      name: session-data
+      name: whatsapp-session-data
       mountPath: /opt/render/project/src/session
       sizeGB: 1
+    healthCheckPath: /
+    autoDeploy: true

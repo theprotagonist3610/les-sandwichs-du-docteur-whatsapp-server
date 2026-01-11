@@ -1,0 +1,371 @@
+{
+  "info": {
+    "name": "WhatsApp Server API",
+    "_postman_id": "whatsapp-server-api",
+    "description": "Collection complète pour tester l'API WhatsApp Server",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Core Endpoints",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": ["{{base_url}}"],
+              "path": [""]
+            },
+            "description": "Vérifie le statut du serveur et du client WhatsApp"
+          },
+          "response": []
+        },
+        {
+          "name": "Send Message",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-api-key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"number\": \"229XXXXXXXX\",\n  \"message\": \"Hello from Postman!\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/send",
+              "host": ["{{base_url}}"],
+              "path": ["send"]
+            },
+            "description": "Envoie un message texte à un destinataire"
+          },
+          "response": []
+        },
+        {
+          "name": "Send Bulk Messages",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-api-key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"numbers\": [\"229XXXXXXXX\", \"229YYYYYYYY\", \"229ZZZZZZZZ\"],\n  \"message\": \"Bulk message test from Postman\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/send/bulk",
+              "host": ["{{base_url}}"],
+              "path": ["send", "bulk"]
+            },
+            "description": "Envoie un message à plusieurs destinataires"
+          },
+          "response": []
+        },
+        {
+          "name": "Client Info",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/client/info",
+              "host": ["{{base_url}}"],
+              "path": ["client", "info"]
+            },
+            "description": "Récupère les informations du client WhatsApp"
+          },
+          "response": []
+        },
+        {
+          "name": "Queue Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/queue/stats",
+              "host": ["{{base_url}}"],
+              "path": ["queue", "stats"]
+            },
+            "description": "Récupère les statistiques de la file d'attente"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Messages",
+      "item": [
+        {
+          "name": "Get Messages",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/messages/{{chat_id}}?limit=50&offset=0",
+              "host": ["{{base_url}}"],
+              "path": ["api", "messages", "{{chat_id}}"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "50",
+                  "description": "Nombre de messages à récupérer"
+                },
+                {
+                  "key": "offset",
+                  "value": "0",
+                  "description": "Décalage pour pagination"
+                }
+              ]
+            },
+            "description": "Récupère l'historique des messages d'un chat"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Message",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-api-key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"everyone\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/messages/{{message_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "messages", "{{message_id}}"]
+            },
+            "description": "Supprime un message (nécessite permission admin)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Contacts",
+      "item": [
+        {
+          "name": "Get All Contacts",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/contacts",
+              "host": ["{{base_url}}"],
+              "path": ["api", "contacts"]
+            },
+            "description": "Récupère la liste de tous les contacts"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Contact Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/contacts/{{contact_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "contacts", "{{contact_id}}"]
+            },
+            "description": "Récupère les détails d'un contact spécifique"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Media",
+      "item": [
+        {
+          "name": "Send Media",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "",
+                  "description": "Fichier à envoyer (image, vidéo, document)"
+                },
+                {
+                  "key": "number",
+                  "value": "229XXXXXXXX",
+                  "type": "text",
+                  "description": "Numéro du destinataire"
+                },
+                {
+                  "key": "caption",
+                  "value": "Test media upload from Postman",
+                  "type": "text",
+                  "description": "Légende optionnelle"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/media/send",
+              "host": ["{{base_url}}"],
+              "path": ["api", "media", "send"]
+            },
+            "description": "Envoie un fichier média (image, vidéo, document, audio)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Advanced",
+      "item": [
+        {
+          "name": "Get All Chats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/chats",
+              "host": ["{{base_url}}"],
+              "path": ["api", "chats"]
+            },
+            "description": "Liste tous les chats (conversations)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get QR Code Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/qr",
+              "host": ["{{base_url}}"],
+              "path": ["api", "qr"]
+            },
+            "description": "Récupère le statut de connexion du QR code"
+          },
+          "response": []
+        },
+        {
+          "name": "Webhook",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-api-key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"event\": \"send_message\",\n  \"data\": {\n    \"number\": \"229XXXXXXXX\",\n    \"message\": \"Message from webhook\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/webhook",
+              "host": ["{{base_url}}"],
+              "path": ["webhook"]
+            },
+            "description": "Endpoint webhook pour événements externes"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "api_key",
+      "value": "your_api_key_here",
+      "type": "string"
+    },
+    {
+      "key": "chat_id",
+      "value": "229XXXXXXXX",
+      "type": "string"
+    },
+    {
+      "key": "contact_id",
+      "value": "229XXXXXXXX",
+      "type": "string"
+    },
+    {
+      "key": "message_id",
+      "value": "true_229XXXXXXXX@c.us_3EB0XXXXX",
+      "type": "string"
+    }
+  ]
+}

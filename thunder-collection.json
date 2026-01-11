@@ -1,0 +1,285 @@
+{
+  "client": "Thunder Client",
+  "collectionName": "WhatsApp Server API",
+  "dateExported": "2024-01-11",
+  "version": "1.2",
+  "folders": [
+    {
+      "name": "Core Endpoints",
+      "requests": []
+    },
+    {
+      "name": "Messages",
+      "requests": []
+    },
+    {
+      "name": "Contacts",
+      "requests": []
+    },
+    {
+      "name": "Media",
+      "requests": []
+    },
+    {
+      "name": "Advanced",
+      "requests": []
+    }
+  ],
+  "requests": [
+    {
+      "name": "Health Check",
+      "method": "GET",
+      "url": "{{base_url}}/",
+      "headers": [],
+      "body": {},
+      "folder": "Core Endpoints",
+      "tests": [
+        {
+          "type": "json",
+          "value": "success",
+          "compare": "==",
+          "path": "success"
+        }
+      ]
+    },
+    {
+      "name": "Send Message",
+      "method": "POST",
+      "url": "{{base_url}}/send",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "x-api-key",
+          "value": "{{api_key}}"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"number\": \"229XXXXXXXX\",\n  \"message\": \"Hello from Thunder Client!\"\n}"
+      },
+      "folder": "Core Endpoints",
+      "tests": []
+    },
+    {
+      "name": "Send Bulk Messages",
+      "method": "POST",
+      "url": "{{base_url}}/send/bulk",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "x-api-key",
+          "value": "{{api_key}}"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"numbers\": [\"229XXXXXXXX\", \"229YYYYYYYY\"],\n  \"message\": \"Bulk message test\"\n}"
+      },
+      "folder": "Core Endpoints",
+      "tests": []
+    },
+    {
+      "name": "Client Info",
+      "method": "GET",
+      "url": "{{base_url}}/client/info",
+      "headers": [
+        {
+          "name": "x-api-key",
+          "value": "{{api_key}}"
+        }
+      ],
+      "body": {},
+      "folder": "Core Endpoints",
+      "tests": []
+    },
+    {
+      "name": "Queue Stats",
+      "method": "GET",
+      "url": "{{base_url}}/queue/stats",
+      "headers": [
+        {
+          "name": "x-api-key",
+          "value": "{{api_key}}"
+        }
+      ],
+      "body": {},
+      "folder": "Core Endpoints",
+      "tests": []
+    },
+    {
+      "name": "Get Messages",
+      "method": "GET",
+      "url": "{{base_url}}/api/messages/{{chat_id}}?limit=50&offset=0",
+      "headers": [
+        {
+          "name": "x-api-key",
+          "value": "{{api_key}}"
+        }
+      ],
+      "body": {},
+      "folder": "Messages",
+      "tests": []
+    },
+    {
+      "name": "Delete Message",
+      "method": "DELETE",
+      "url": "{{base_url}}/api/messages/{{message_id}}",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "x-api-key",
+          "value": "{{api_key}}"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"everyone\": true\n}"
+      },
+      "folder": "Messages",
+      "tests": []
+    },
+    {
+      "name": "Get All Contacts",
+      "method": "GET",
+      "url": "{{base_url}}/api/contacts",
+      "headers": [
+        {
+          "name": "x-api-key",
+          "value": "{{api_key}}"
+        }
+      ],
+      "body": {},
+      "folder": "Contacts",
+      "tests": []
+    },
+    {
+      "name": "Get Contact Details",
+      "method": "GET",
+      "url": "{{base_url}}/api/contacts/{{contact_id}}",
+      "headers": [
+        {
+          "name": "x-api-key",
+          "value": "{{api_key}}"
+        }
+      ],
+      "body": {},
+      "folder": "Contacts",
+      "tests": []
+    },
+    {
+      "name": "Send Media",
+      "method": "POST",
+      "url": "{{base_url}}/api/media/send",
+      "headers": [
+        {
+          "name": "x-api-key",
+          "value": "{{api_key}}"
+        }
+      ],
+      "body": {
+        "type": "formdata",
+        "formdata": [
+          {
+            "name": "file",
+            "value": "",
+            "type": "file"
+          },
+          {
+            "name": "number",
+            "value": "229XXXXXXXX",
+            "type": "text"
+          },
+          {
+            "name": "caption",
+            "value": "Test media upload",
+            "type": "text"
+          }
+        ]
+      },
+      "folder": "Media",
+      "tests": []
+    },
+    {
+      "name": "Get All Chats",
+      "method": "GET",
+      "url": "{{base_url}}/api/chats",
+      "headers": [
+        {
+          "name": "x-api-key",
+          "value": "{{api_key}}"
+        }
+      ],
+      "body": {},
+      "folder": "Advanced",
+      "tests": []
+    },
+    {
+      "name": "Get QR Code Status",
+      "method": "GET",
+      "url": "{{base_url}}/api/qr",
+      "headers": [
+        {
+          "name": "x-api-key",
+          "value": "{{api_key}}"
+        }
+      ],
+      "body": {},
+      "folder": "Advanced",
+      "tests": []
+    },
+    {
+      "name": "Webhook",
+      "method": "POST",
+      "url": "{{base_url}}/webhook",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "x-api-key",
+          "value": "{{api_key}}"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"event\": \"send_message\",\n  \"data\": {\n    \"number\": \"229XXXXXXXX\",\n    \"message\": \"Message from webhook\"\n  }\n}"
+      },
+      "folder": "Advanced",
+      "tests": []
+    }
+  ],
+  "settings": {
+    "envVars": [
+      {
+        "name": "base_url",
+        "value": "http://localhost:3000"
+      },
+      {
+        "name": "api_key",
+        "value": "your_api_key_here"
+      },
+      {
+        "name": "chat_id",
+        "value": "229XXXXXXXX"
+      },
+      {
+        "name": "contact_id",
+        "value": "229XXXXXXXX"
+      },
+      {
+        "name": "message_id",
+        "value": "true_229XXXXXXXX@c.us_3EB0XXXXX"
+      }
+    ]
+  }
+}

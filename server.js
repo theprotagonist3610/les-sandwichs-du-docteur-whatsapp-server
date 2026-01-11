@@ -1,12 +1,13 @@
 /**
  * Serveur WhatsApp avec API REST
- * Hébergé sur Render - Compatible Free Tier
+ * Hï¿½bergï¿½ sur Render - Compatible Free Tier
  */
 
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
+import helmet from 'helmet';
 
 // Services WhatsApp
 import { initializeWhatsApp, getClient } from './services/whatsappClient.js';
@@ -16,6 +17,11 @@ import { handleIncomingMessage } from './services/messageService.js';
 import { authMiddleware, logAccess } from './middlewares/authMiddleware.js';
 import { errorHandler, notFoundHandler } from './middlewares/errorHandler.js';
 import {
+  createApiKeyRateLimiter,
+  createBulkSendRateLimiter,
+  rateLimitLogger
+} from './middlewares/rateLimitMiddleware.js';
+import {
   healthCheck,
   sendMessageHandler,
   sendBulkHandler,
@@ -23,32 +29,71 @@ import {
   queueStatsHandler,
   clientInfoHandler
 } from './middlewares/apiHandler.js';
+import {
+  getMessagesHandler,
+  deleteMessageHandler,
+  getContactsHandler,
+  getContactHandler,
+  sendMediaHandler,
+  getQrCodeHandler,
+  getChatsHandler,
+  uploadMiddleware
+} from './middlewares/extendedApiHandler.js';
 
 // Configuration
 const PORT = process.env.PORT || 3000;
 const app = express();
 
-// Middlewares globaux
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Middlewares globaux de sÃ©curitÃ©
+app.use(helmet({
+  contentSecurityPolicy: false, // DÃ©sactivÃ© pour compatibilitÃ© API
+  crossOriginEmbedderPolicy: false
+}));
 
-// Logger HTTP (désactivé en production pour économiser les ressources)
+// CORS configuration
+const corsOptions = {
+  origin: process.env.CORS_ORIGIN || '*',
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
+
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Logger HTTP (dÃ©sactivÃ© en production pour Ã©conomiser les ressources)
 if (process.env.NODE_ENV !== 'production') {
   app.use(morgan('dev'));
 }
 
 app.use(logAccess);
 
+// Rate limiting global
+const globalRateLimit = createApiKeyRateLimiter();
+app.use(globalRateLimit);
+app.use(rateLimitLogger);
+
 // Routes publiques
 app.get('/', healthCheck);
 
-// Routes protégées par authentification
+// Rate limiter spÃ©cifique pour les envois en masse
+const bulkRateLimit = createBulkSendRateLimiter();
+
+// Routes protÃ©gÃ©es par authentification
 app.post('/send', authMiddleware, sendMessageHandler);
-app.post('/send/bulk', authMiddleware, sendBulkHandler);
+app.post('/send/bulk', authMiddleware, bulkRateLimit, sendBulkHandler);
 app.post('/webhook', authMiddleware, webhookHandler);
 app.get('/queue/stats', authMiddleware, queueStatsHandler);
 app.get('/client/info', authMiddleware, clientInfoHandler);
+
+// Nouveaux endpoints API
+app.get('/api/messages/:chatId', authMiddleware, getMessagesHandler);
+app.delete('/api/messages/:messageId', authMiddleware, deleteMessageHandler);
+app.get('/api/contacts', authMiddleware, getContactsHandler);
+app.get('/api/contacts/:contactId', authMiddleware, getContactHandler);
+app.get('/api/chats', authMiddleware, getChatsHandler);
+app.post('/api/media/send', authMiddleware, uploadMiddleware, sendMediaHandler);
+app.get('/api/qr', authMiddleware, getQrCodeHandler);
 
 // Gestionnaire 404
 app.use(notFoundHandler);
@@ -60,40 +105,40 @@ app.use(errorHandler);
  * Initialise le serveur et le client WhatsApp
  */
 async function startServer() {
-  console.log('=€ Démarrage du serveur WhatsApp...');
+  console.log('=ï¿½ Dï¿½marrage du serveur WhatsApp...');
   console.log('');
 
-  // Vérification de la configuration
+  // Vï¿½rification de la configuration
   if (!process.env.API_KEY) {
-    console.error('L ERREUR: API_KEY non définie dans .env');
-    console.error('=¡ Créez un fichier .env avec : API_KEY=votre_cle_secrete');
+    console.error('L ERREUR: API_KEY non dï¿½finie dans .env');
+    console.error('=ï¿½ Crï¿½ez un fichier .env avec : API_KEY=votre_cle_secrete');
     process.exit(1);
   }
 
   try {
-    // Démarre le serveur Express
+    // Dï¿½marre le serveur Express
     app.listen(PORT, () => {
-      console.log(' Serveur Express démarré');
-      console.log(`=á Port: ${PORT}`);
+      console.log(' Serveur Express dï¿½marrï¿½');
+      console.log(`=ï¿½ Port: ${PORT}`);
       console.log(`< URL: http://localhost:${PORT}`);
       console.log('');
     });
 
     // Initialise le client WhatsApp
-    console.log('=ñ Initialisation du client WhatsApp...');
+    console.log('=ï¿½ Initialisation du client WhatsApp...');
     await initializeWhatsApp();
 
     // Configure les gestionnaires de messages
     const client = getClient();
     if (client) {
       client.on('message', handleIncomingMessage);
-      console.log(' Gestionnaires de messages configurés');
+      console.log(' Gestionnaires de messages configurï¿½s');
       console.log('');
       console.log('PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP');
-      console.log(' SERVEUR PRÊT');
+      console.log(' SERVEUR PRï¿½T');
       console.log('PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP');
       console.log('');
-      console.log('=Ý Testez l\'API avec:');
+      console.log('=ï¿½ Testez l\'API avec:');
       console.log('   curl -X POST http://localhost:' + PORT + '/send \\');
       console.log('   -H "Content-Type: application/json" \\');
       console.log('   -H "x-api-key: ' + process.env.API_KEY + '" \\');
@@ -101,13 +146,13 @@ async function startServer() {
       console.log('');
     }
   } catch (error) {
-    console.error('L Erreur lors du démarrage:', error);
+    console.error('L Erreur lors du dï¿½marrage:', error);
     process.exit(1);
   }
 }
 
 /**
- * Gestion de l'arrêt propre du serveur
+ * Gestion de l'arrï¿½t propre du serveur
  */
 function setupGracefulShutdown() {
   const signals = ['SIGTERM', 'SIGINT'];
@@ -115,35 +160,35 @@ function setupGracefulShutdown() {
   signals.forEach(signal => {
     process.on(signal, async () => {
       console.log('');
-      console.log(`\n=Ñ Signal ${signal} reçu, arrêt du serveur...`);
+      console.log(`\n=ï¿½ Signal ${signal} reï¿½u, arrï¿½t du serveur...`);
 
       try {
         const client = getClient();
         if (client) {
           await client.destroy();
-          console.log(' Client WhatsApp déconnecté');
+          console.log(' Client WhatsApp dï¿½connectï¿½');
         }
 
-        console.log('=K Serveur arrêté proprement');
+        console.log('=K Serveur arrï¿½tï¿½ proprement');
         process.exit(0);
       } catch (error) {
-        console.error('L Erreur lors de l\'arrêt:', error);
+        console.error('L Erreur lors de l\'arrï¿½t:', error);
         process.exit(1);
       }
     });
   });
 }
 
-// Gestion des erreurs non capturées
+// Gestion des erreurs non capturï¿½es
 process.on('unhandledRejection', (reason, promise) => {
-  console.error('L Promesse non gérée:', reason);
+  console.error('L Promesse non gï¿½rï¿½e:', reason);
 });
 
 process.on('uncaughtException', (error) => {
-  console.error('L Exception non capturée:', error);
+  console.error('L Exception non capturï¿½e:', error);
   process.exit(1);
 });
 
-// Démarrage
+// Dï¿½marrage
 setupGracefulShutdown();
 startServer();

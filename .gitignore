@@ -10,6 +10,9 @@ session/
 .env
 .env.local
 
+# API Keys
+api-keys.json
+
 # Logs
 *.log
 logs/
@@ -34,3 +37,4 @@ build/
 *.tmp
 temp/
 messages/
+uploads/
