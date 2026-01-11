@@ -12,6 +12,9 @@ session/
 
 # API Keys
 api-keys.json
+postman-collection.json
+thunder-collection.json
+postman-environment-*.json
 
 # Logs
 *.log

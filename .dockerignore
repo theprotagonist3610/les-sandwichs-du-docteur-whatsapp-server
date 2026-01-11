@@ -10,3 +10,8 @@ README.md
 *.md
 .DS_Store
 .vscode
+api-keys.json
+postman-collection.json
+thunder-collection.json
+postman-environment-local.json
+postman-environment-production.json

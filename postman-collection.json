@@ -344,12 +344,12 @@
   "variable": [
     {
       "key": "base_url",
-      "value": "http://localhost:3000",
+      "value": "https://les-sandwichs-du-docteur-whatsapp-server.onrender.com",
       "type": "string"
     },
     {
       "key": "api_key",
-      "value": "your_api_key_here",
+      "value": "sk_9fa142dd2e6ef26de155bb3f703117d9e8bcd145acd6e9fb3855a94c32eb6114",
       "type": "string"
     },
     {
