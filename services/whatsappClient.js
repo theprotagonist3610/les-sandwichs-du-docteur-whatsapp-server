@@ -5,9 +5,11 @@
 import pkg from 'whatsapp-web.js';
 const { Client, LocalAuth } = pkg;
 import qrcode from 'qrcode-terminal';
+import QRCode from 'qrcode';
 
 let client = null;
 let isReady = false;
+let latestQrCode = null; // Stocke le dernier QR code généré
 
 /**
  * Crée et configure le client WhatsApp
@@ -80,17 +82,22 @@ export function createWhatsAppClient() {
  */
 function setupEventHandlers(client) {
   // Événement: QR Code généré
-  client.on('qr', (qr) => {
+  client.on('qr', async (qr) => {
+    // Stocker le QR code pour l'API
+    latestQrCode = qr;
+
     console.log('📱 [WhatsApp] QR Code généré. Scannez-le avec votre téléphone:');
     console.log('');
     qrcode.generate(qr, { small: true });
     console.log('');
     console.log('💡 Ouvrez WhatsApp > Appareils connectés > Connecter un appareil');
+    console.log('🌐 Ou accédez à: http://localhost:3000/api/qr pour le QR code image');
   });
 
   // Événement: Client prêt
   client.on('ready', () => {
     isReady = true;
+    latestQrCode = null; // Effacer le QR code une fois connecté
     console.log('✅ [WhatsApp] Client connecté et prêt !');
     console.log(`📞 [WhatsApp] Numéro: ${client.info?.wid?.user || 'Non disponible'}`);
   });
@@ -156,6 +163,14 @@ export function getClient() {
  */
 export function isClientReady() {
   return isReady && client !== null;
+}
+
+/**
+ * Obtient le dernier QR code généré
+ * @returns {string|null} QR code string ou null
+ */
+export function getLatestQrCode() {
+  return latestQrCode;
 }
 
 /**
